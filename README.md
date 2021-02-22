@@ -1,5 +1,64 @@
 # AngularDemoHeroku
 
+STEPS:
+
+1)Create Angular App
+2)Configure angular app to deploy  properly on Heroku
+3)Host source code of Angular app on Github
+4)Login to Heroku and create new app in Heroku
+5) Connecting GIT hub repo to Heroku apps
+
+
+>>Configure angular app to deploy  properly on Heroku --
+
+a) Ensure you have the latest version of angular CLI and angular compiler cli
+ 
+ npm install @angular/cli@latest @angular/compiler-cli --save-dev
+
+ b) Copy below dependencies from dev dependancy to dependency in package.json
+   
+  "@angular/cli": "~11.0.5",
+  "@angular/compiler-cli": "~11.0.5",
+   "typescript": "~4.0.2"
+
+
+>>Now create Heroku postbuild script in package.json and add a "heroku-postbuild" command like so:
+
+"heroku-postbuild": "ng build --prod"
+
+>>  Add Node and npm engine in the last of package.json(specify version which you used in your machine)
+
+"engines":{
+    "node":"14.15.3",
+    "npm":"6.14.9"
+}
+
+>> Install server to run your app
+npm i express path --save
+
+
+>> Create a server.js in the root of the application and  paste the following code
+
+const express = require("express");
+
+const path = require("path");
+const app = express();
+
+
+//Server  only  the static  files from the dist directory
+app.use(express.static('./dist/angular-demo-heroku'));
+
+
+
+app.get("/*",(req, res) => res.sendFile('index.html',{  root:   'dist/angular-demo-heroku/'}),)
+
+// Start the app  by listening on the default heroku port
+
+app.listen(process.env.PORT || 8080)
+
+
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
 ## Development server
